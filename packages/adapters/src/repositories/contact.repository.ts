@@ -2,7 +2,8 @@
  * Contact repository
  */
 
-import { eq, and, ilike, or, SQL } from 'drizzle-orm';
+import { eq, ilike, or, SQL } from 'drizzle-orm';
+import type { EmailAddress, PhoneNumber } from '@rolodex/core';
 import { contacts, ContactRecord, NewContactRecord } from '../db/schema';
 import { BaseRepository, PaginatedResult, PaginationOptions } from './base';
 import { Contact, CreateContactInput, UpdateContactInput, DuplicateError } from '@rolodex/core';
@@ -186,9 +187,9 @@ export class ContactRepository extends BaseRepository<
       firstName: record.firstName,
       lastName: record.lastName,
       email: record.email,
-      emails: record.emails ?? undefined,
+      emails: record.emails as EmailAddress[] | undefined,
       phone: record.phone ?? undefined,
-      phones: record.phones ?? undefined,
+      phones: record.phones as PhoneNumber[] | undefined,
       title: record.title ?? undefined,
       department: record.department ?? undefined,
       companyId: record.companyId ?? undefined,

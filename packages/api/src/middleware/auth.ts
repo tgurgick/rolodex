@@ -12,18 +12,12 @@ export interface AuthUser {
   organizationId?: string;
 }
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    user?: AuthUser;
-  }
-}
-
 /**
  * Verify JWT token and extract user
  */
 export async function authenticate(
   request: FastifyRequest,
-  reply: FastifyReply
+  _reply: FastifyReply
 ): Promise<void> {
   try {
     // Check for API key first
@@ -35,11 +29,7 @@ export async function authenticate(
 
     // Verify JWT token
     await request.jwtVerify();
-
-    // Extract user from token
-    const payload = request.user as unknown as AuthUser;
-    request.user = payload;
-  } catch (err) {
+  } catch {
     throw new AuthenticationError('Invalid or missing authentication token');
   }
 }
@@ -49,11 +39,12 @@ export async function authenticate(
  */
 export function requireRole(...roles: string[]) {
   return async (request: FastifyRequest, _reply: FastifyReply): Promise<void> => {
-    if (!request.user) {
+    const user = request.user as AuthUser | undefined;
+    if (!user) {
       throw new AuthenticationError();
     }
 
-    if (!roles.includes(request.user.role)) {
+    if (!roles.includes(user.role)) {
       throw new AuthorizationError('access', 'resource');
     }
   };
@@ -68,9 +59,14 @@ export async function optionalAuth(
 ): Promise<void> {
   try {
     await request.jwtVerify();
-    const payload = request.user as unknown as AuthUser;
-    request.user = payload;
   } catch {
     // No-op - authentication is optional
   }
+}
+
+/**
+ * Helper to get the authenticated user from request
+ */
+export function getUser(request: FastifyRequest): AuthUser | undefined {
+  return request.user as AuthUser | undefined;
 }

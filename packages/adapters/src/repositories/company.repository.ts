@@ -2,7 +2,7 @@
  * Company repository
  */
 
-import { eq, and, ilike, or, SQL } from 'drizzle-orm';
+import { eq, ilike, or, SQL } from 'drizzle-orm';
 import { companies, CompanyRecord, NewCompanyRecord } from '../db/schema';
 import { BaseRepository, PaginatedResult, PaginationOptions } from './base';
 import { Company, CreateCompanyInput, UpdateCompanyInput, DuplicateError } from '@rolodex/core';

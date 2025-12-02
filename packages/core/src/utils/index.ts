@@ -211,8 +211,10 @@ export function mask(value: string, visibleChars = 3): string {
  * Mask an email address
  */
 export function maskEmail(email: string): string {
-  const [local, domain] = email.split('@');
-  if (!domain) return mask(email);
+  const parts = email.split('@');
+  const local = parts[0];
+  const domain = parts[1];
+  if (!local || !domain) return mask(email);
   const maskedLocal = mask(local, 2);
   return `${maskedLocal}@${domain}`;
 }

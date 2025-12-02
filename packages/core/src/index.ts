@@ -4,16 +4,65 @@
  * Core entities, types, validation, and utilities for Rolodex CRM
  */
 
-// Entity types
-export * from './types/contact';
-export * from './types/company';
-export * from './types/deal';
-export * from './types/activity';
-export * from './types/task';
-export * from './types/workflow';
+// Entity types (excluding Create/Update Input types - those come from validation)
+export type {
+  Contact,
+  ContactStatus,
+  EmailAddress,
+  PhoneNumber,
+} from './types/contact';
+
+export type {
+  Company,
+  CompanyStatus,
+  CompanySize,
+} from './types/company';
+
+export type {
+  Deal,
+  DealStatus,
+  DealProduct,
+  StageHistoryEntry,
+} from './types/deal';
+
+export type {
+  Activity,
+  ActivityType,
+  ActivityStatus,
+  CommunicationDirection,
+  ActivityParticipant,
+  ActivityAttachment,
+} from './types/activity';
+
+export type {
+  Task,
+  TaskStatus,
+  TaskPriority,
+  RecurrenceFrequency,
+  TaskRecurrence,
+} from './types/task';
+
+export type {
+  Workflow,
+  WorkflowTrigger,
+  WorkflowAction,
+  TriggerType,
+  EntityType,
+  EventAction,
+  ConditionOperator,
+  ActionType,
+  ErrorHandlingStrategy,
+  Condition,
+  Conditions,
+  EventTrigger,
+  ScheduleTrigger,
+  WebhookTrigger,
+  ErrorHandling,
+} from './types/workflow';
+
 export * from './types/common';
 
-// Validation schemas
+// Validation schemas (includes inferred Input types)
 export * from './validation';
 
 // Error classes

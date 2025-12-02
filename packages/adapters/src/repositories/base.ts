@@ -3,7 +3,7 @@
  */
 
 import { eq, and, or, ilike, sql, SQL, desc, asc } from 'drizzle-orm';
-import { PgTable, PgColumn, TableConfig } from 'drizzle-orm/pg-core';
+import type { PgTable, TableConfig } from 'drizzle-orm/pg-core';
 import { Database, getDatabase } from '../db/connection';
 import { NotFoundError, DatabaseError } from '@rolodex/core';
 
@@ -26,6 +26,9 @@ export interface BaseFilter {
   search?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyColumn = any;
+
 export abstract class BaseRepository<
   TTable extends PgTable<TableConfig>,
   TRecord,
@@ -46,7 +49,7 @@ export abstract class BaseRepository<
    */
   async findById(id: string): Promise<TRecord | null> {
     try {
-      const idColumn = (this.table as unknown as { id: PgColumn<unknown> }).id;
+      const idColumn = (this.table as unknown as { id: AnyColumn }).id;
       const results = await this.db
         .select()
         .from(this.table)
@@ -93,7 +96,13 @@ export abstract class BaseRepository<
       const total = Number(countResult[0]?.count ?? 0);
 
       // Get paginated results
-      const sortColumn = (this.table as unknown as Record<string, PgColumn<unknown>>)[sortBy];
+      const tableAsRecord = this.table as unknown as Record<string, AnyColumn>;
+      const sortColumn = tableAsRecord[sortBy];
+
+      if (!sortColumn) {
+        throw new Error(`Invalid sort column: ${sortBy}`);
+      }
+
       const orderBy = sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn);
 
       const results = await this.db
@@ -146,7 +155,7 @@ export abstract class BaseRepository<
    */
   async update(id: string, input: TUpdateInput, actorId?: string): Promise<TRecord> {
     try {
-      const idColumn = (this.table as unknown as { id: PgColumn<unknown> }).id;
+      const idColumn = (this.table as unknown as { id: AnyColumn }).id;
       const data = {
         ...input,
         updatedAt: new Date(),
@@ -175,7 +184,7 @@ export abstract class BaseRepository<
    */
   async delete(id: string): Promise<void> {
     try {
-      const idColumn = (this.table as unknown as { id: PgColumn<unknown> }).id;
+      const idColumn = (this.table as unknown as { id: AnyColumn }).id;
       const results = await this.db
         .delete(this.table)
         .where(eq(idColumn, id))
@@ -211,9 +220,9 @@ export abstract class BaseRepository<
    */
   protected buildSearchCondition(
     searchTerm: string,
-    columns: PgColumn<unknown>[]
+    columns: AnyColumn[]
   ): SQL {
-    const conditions = columns.map((col) => ilike(col, `%${searchTerm}%`));
+    const conditions = columns.map((col: AnyColumn) => ilike(col, `%${searchTerm}%`));
     return or(...conditions) as SQL;
   }
 }

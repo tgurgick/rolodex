@@ -2,7 +2,7 @@
  * Deal repository
  */
 
-import { eq, and, ilike, or, gte, lte, SQL } from 'drizzle-orm';
+import { eq, ilike, gte, lte, SQL } from 'drizzle-orm';
 import { deals, DealRecord, NewDealRecord } from '../db/schema';
 import { BaseRepository, PaginatedResult, PaginationOptions } from './base';
 import { Deal, CreateDealInput, UpdateDealInput } from '@rolodex/core';
@@ -121,8 +121,9 @@ export class DealRepository extends BaseRepository<
 
     // Update stage history
     const history = current.stageHistory ?? [];
-    if (history.length > 0) {
-      history[history.length - 1].exitedAt = now;
+    const lastEntry = history[history.length - 1];
+    if (lastEntry) {
+      lastEntry.exitedAt = now;
     }
     history.push({
       stage,
@@ -157,8 +158,9 @@ export class DealRepository extends BaseRepository<
 
     // Update stage history
     const history = current.stageHistory ?? [];
-    if (history.length > 0) {
-      history[history.length - 1].exitedAt = now;
+    const lastEntry = history[history.length - 1];
+    if (lastEntry) {
+      lastEntry.exitedAt = now;
     }
 
     const closedStage = status === 'won' ? 'Closed Won' : 'Closed Lost';
