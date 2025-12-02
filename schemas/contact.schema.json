@@ -5,28 +5,68 @@
   "description": "A contact represents an individual person in the CRM",
   "type": "object",
   "required": ["id", "firstName", "lastName", "email"],
+  "x-privacy": {
+    "dataSubjectType": "customer_prospect",
+    "legalBasis": "legitimate_interest",
+    "retentionPolicy": "account_lifetime",
+    "exportable": true,
+    "deletable": true
+  },
   "properties": {
     "id": {
       "type": "string",
       "format": "uuid",
-      "description": "Unique identifier for the contact"
+      "description": "Unique identifier for the contact",
+      "x-pii-level": "minimal",
+      "x-pii-category": "identifier",
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "firstName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 100,
-      "description": "Contact's first name"
+      "description": "Contact's first name",
+      "x-pii-level": "medium",
+      "x-pii-category": "identity",
+      "x-retention": "account_lifetime",
+      "x-exportable": true,
+      "x-anonymizable": true,
+      "x-anonymization-method": "pseudonymize",
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "lastName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 100,
-      "description": "Contact's last name"
+      "description": "Contact's last name",
+      "x-pii-level": "medium",
+      "x-pii-category": "identity",
+      "x-retention": "account_lifetime",
+      "x-exportable": true,
+      "x-anonymizable": true,
+      "x-anonymization-method": "pseudonymize",
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "email": {
       "type": "string",
       "format": "email",
-      "description": "Primary email address"
+      "description": "Primary email address",
+      "x-pii-level": "medium",
+      "x-pii-category": "contact",
+      "x-retention": "account_lifetime",
+      "x-exportable": true,
+      "x-anonymizable": true,
+      "x-anonymization-method": "hash",
+      "x-encrypted": "searchable",
+      "x-searchable": true,
+      "x-ai-readable": true,
+      "x-validation": {
+        "sanitize": "lowercase",
+        "normalize": true
+      }
     },
     "emails": {
       "type": "array",
@@ -34,17 +74,42 @@
         "type": "object",
         "required": ["email", "type"],
         "properties": {
-          "email": { "type": "string", "format": "email" },
-          "type": { "type": "string", "enum": ["work", "personal", "other"] },
-          "primary": { "type": "boolean", "default": false }
+          "email": {
+            "type": "string",
+            "format": "email",
+            "x-pii-level": "medium",
+            "x-pii-category": "contact"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["work", "personal", "other"]
+          },
+          "primary": {
+            "type": "boolean",
+            "default": false
+          }
         }
       },
-      "description": "All email addresses for this contact"
+      "description": "All email addresses for this contact",
+      "x-pii-level": "medium",
+      "x-pii-category": "contact",
+      "x-exportable": true,
+      "x-ai-readable": true
     },
     "phone": {
       "type": "string",
       "pattern": "^[+]?[0-9\\s\\-().]+$",
-      "description": "Primary phone number"
+      "description": "Primary phone number",
+      "x-pii-level": "medium",
+      "x-pii-category": "contact",
+      "x-retention": "account_lifetime",
+      "x-exportable": true,
+      "x-anonymizable": true,
+      "x-anonymization-method": "redact",
+      "x-encrypted": true,
+      "x-searchable": false,
+      "x-ai-readable": true,
+      "x-ai-requires-consent": true
     },
     "phones": {
       "type": "array",
@@ -52,101 +117,271 @@
         "type": "object",
         "required": ["number", "type"],
         "properties": {
-          "number": { "type": "string" },
-          "type": { "type": "string", "enum": ["work", "mobile", "home", "other"] },
-          "primary": { "type": "boolean", "default": false }
+          "number": {
+            "type": "string",
+            "x-pii-level": "medium",
+            "x-encrypted": true
+          },
+          "type": {
+            "type": "string",
+            "enum": ["work", "mobile", "home", "other"]
+          },
+          "primary": {
+            "type": "boolean",
+            "default": false
+          }
         }
       },
-      "description": "All phone numbers for this contact"
+      "description": "All phone numbers for this contact",
+      "x-pii-level": "medium",
+      "x-pii-category": "contact",
+      "x-exportable": true,
+      "x-ai-readable": true
     },
     "title": {
       "type": "string",
       "maxLength": 200,
-      "description": "Job title"
+      "description": "Job title",
+      "x-pii-level": "low",
+      "x-pii-category": "professional",
+      "x-exportable": true,
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "department": {
       "type": "string",
       "maxLength": 100,
-      "description": "Department within company"
+      "description": "Department within company",
+      "x-pii-level": "low",
+      "x-pii-category": "professional",
+      "x-exportable": true,
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "companyId": {
       "type": "string",
       "format": "uuid",
-      "description": "Reference to associated company"
+      "description": "Reference to associated company",
+      "x-pii-level": "minimal",
+      "x-pii-category": "reference",
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "address": {
       "$ref": "#/definitions/address",
-      "description": "Primary address"
+      "description": "Primary address",
+      "x-pii-level": "medium",
+      "x-pii-category": "location",
+      "x-retention": "account_lifetime",
+      "x-exportable": true,
+      "x-anonymizable": true,
+      "x-anonymization-method": "generalize",
+      "x-encrypted": true,
+      "x-ai-readable": true,
+      "x-ai-requires-consent": true
     },
     "socialProfiles": {
       "type": "object",
       "properties": {
-        "linkedin": { "type": "string", "format": "uri" },
-        "twitter": { "type": "string" },
-        "github": { "type": "string" }
+        "linkedin": {
+          "type": "string",
+          "format": "uri",
+          "x-pii-level": "low"
+        },
+        "twitter": {
+          "type": "string",
+          "x-pii-level": "low"
+        },
+        "github": {
+          "type": "string",
+          "x-pii-level": "low"
+        }
       },
-      "description": "Social media profiles"
+      "description": "Social media profiles",
+      "x-pii-level": "low",
+      "x-pii-category": "public",
+      "x-exportable": true,
+      "x-ai-readable": true
     },
     "tags": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Tags for categorization"
+      "items": {
+        "type": "string",
+        "maxLength": 50
+      },
+      "maxItems": 50,
+      "description": "Tags for categorization",
+      "x-pii-level": "minimal",
+      "x-searchable": true,
+      "x-ai-readable": true
     },
     "customFields": {
       "type": "object",
       "additionalProperties": true,
-      "description": "Custom fields defined by the user"
+      "description": "Custom fields defined by the user",
+      "x-pii-level": "variable",
+      "x-pii-category": "user_defined",
+      "x-exportable": true,
+      "x-ai-readable": true,
+      "x-ai-note": "PII level varies by field; check field-level metadata"
     },
     "source": {
       "type": "string",
-      "description": "How this contact was acquired (e.g., 'website', 'referral', 'import')"
+      "maxLength": 100,
+      "description": "How this contact was acquired (e.g., 'website', 'referral', 'import')",
+      "x-pii-level": "minimal",
+      "x-exportable": true,
+      "x-ai-readable": true
     },
     "ownerId": {
       "type": "string",
       "format": "uuid",
-      "description": "User ID of the contact owner"
+      "description": "User ID of the contact owner",
+      "x-pii-level": "minimal",
+      "x-pii-category": "reference",
+      "x-ai-readable": true
     },
     "status": {
       "type": "string",
       "enum": ["active", "inactive", "archived"],
       "default": "active",
-      "description": "Contact status"
+      "description": "Contact status",
+      "x-pii-level": "minimal",
+      "x-ai-readable": true,
+      "x-ai-writable": true
     },
     "notes": {
       "type": "string",
-      "description": "Free-form notes about the contact"
+      "maxLength": 10000,
+      "description": "Free-form notes about the contact",
+      "x-pii-level": "variable",
+      "x-pii-category": "user_content",
+      "x-retention": "account_lifetime",
+      "x-exportable": true,
+      "x-encrypted": true,
+      "x-ai-readable": true,
+      "x-ai-requires-consent": true,
+      "x-ai-note": "May contain sensitive information; handle with care"
+    },
+    "consent": {
+      "type": "object",
+      "properties": {
+        "dataProcessing": {
+          "type": "boolean",
+          "description": "Consent to process personal data"
+        },
+        "marketingEmail": {
+          "type": "boolean",
+          "description": "Consent to receive marketing emails"
+        },
+        "thirdPartySharing": {
+          "type": "boolean",
+          "description": "Consent to share with integrations"
+        },
+        "aiProcessing": {
+          "type": "boolean",
+          "description": "Consent to AI analysis"
+        },
+        "consentDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When consent was given"
+        },
+        "consentSource": {
+          "type": "string",
+          "description": "How consent was obtained"
+        }
+      },
+      "description": "Consent records for this contact",
+      "x-pii-level": "minimal",
+      "x-pii-category": "consent",
+      "x-exportable": true,
+      "x-ai-readable": true
+    },
+    "doNotContact": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag to prevent all outreach",
+      "x-ai-readable": true,
+      "x-ai-writable": false,
+      "x-ai-note": "AI must respect this flag for all operations"
     },
     "createdAt": {
       "type": "string",
       "format": "date-time",
-      "description": "When the contact was created"
+      "description": "When the contact was created",
+      "x-pii-level": "minimal",
+      "x-exportable": true,
+      "x-ai-readable": true
     },
     "updatedAt": {
       "type": "string",
       "format": "date-time",
-      "description": "When the contact was last updated"
+      "description": "When the contact was last updated",
+      "x-pii-level": "minimal",
+      "x-exportable": true,
+      "x-ai-readable": true
     },
     "createdBy": {
       "type": "string",
       "format": "uuid",
-      "description": "User or AI agent that created this contact"
+      "description": "User or AI agent that created this contact",
+      "x-pii-level": "minimal",
+      "x-pii-category": "reference",
+      "x-ai-readable": true
     },
     "updatedBy": {
       "type": "string",
       "format": "uuid",
-      "description": "User or AI agent that last updated this contact"
+      "description": "User or AI agent that last updated this contact",
+      "x-pii-level": "minimal",
+      "x-pii-category": "reference",
+      "x-ai-readable": true
     }
   },
   "definitions": {
     "address": {
       "type": "object",
       "properties": {
-        "street1": { "type": "string" },
-        "street2": { "type": "string" },
-        "city": { "type": "string" },
-        "state": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "country": { "type": "string" }
+        "street1": {
+          "type": "string",
+          "maxLength": 200,
+          "x-pii-level": "medium",
+          "x-encrypted": true
+        },
+        "street2": {
+          "type": "string",
+          "maxLength": 200,
+          "x-pii-level": "medium",
+          "x-encrypted": true
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 100,
+          "x-pii-level": "low",
+          "x-anonymization-keep": true
+        },
+        "state": {
+          "type": "string",
+          "maxLength": 100,
+          "x-pii-level": "low",
+          "x-anonymization-keep": true
+        },
+        "postalCode": {
+          "type": "string",
+          "maxLength": 20,
+          "x-pii-level": "medium",
+          "x-anonymization-method": "truncate"
+        },
+        "country": {
+          "type": "string",
+          "maxLength": 100,
+          "x-pii-level": "minimal",
+          "x-anonymization-keep": true
+        }
+      },
+      "x-privacy": {
+        "encryptionScope": "field_level"
       }
     }
   }
