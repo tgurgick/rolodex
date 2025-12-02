@@ -1,7 +1,7 @@
 {
-  "name": "@rolodex/core",
+  "name": "@rolodex/api",
   "version": "0.1.0",
-  "description": "Core entities, types, and business logic for Rolodex CRM",
+  "description": "REST and GraphQL API for Rolodex CRM",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -14,20 +14,30 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/",
     "clean": "rm -rf dist"
   },
-  "keywords": ["crm", "core", "entities"],
+  "keywords": ["crm", "api", "fastify", "rest"],
   "license": "MIT",
   "dependencies": {
-    "zod": "^3.22.4"
+    "@rolodex/core": "*",
+    "@rolodex/adapters": "*",
+    "@fastify/cors": "^9.0.0",
+    "@fastify/helmet": "^11.0.0",
+    "@fastify/rate-limit": "^9.0.0",
+    "@fastify/swagger": "^8.0.0",
+    "@fastify/swagger-ui": "^2.0.0",
+    "@fastify/jwt": "^8.0.0",
+    "fastify": "^4.25.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0"
   }
