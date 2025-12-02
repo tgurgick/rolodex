@@ -1,0 +1,75 @@
+# Example Workflow: Automated Follow-up Reminder
+#
+# This workflow creates a follow-up task when a deal moves to the "Proposal" stage
+# and no activity has been logged in the last 3 days.
+
+[workflow]
+name = "Deal Follow-up Reminder"
+description = "Creates a follow-up task when a deal in Proposal stage has no recent activity"
+enabled = true
+
+[trigger]
+type = "schedule"
+
+[trigger.schedule]
+cron = "0 9 * * 1-5"  # Every weekday at 9 AM
+timezone = "America/New_York"
+
+# Find deals in Proposal stage with no activity in 3 days
+[[actions]]
+id = "find_stale_deals"
+type = "find_records"
+
+[actions.config]
+entity = "deal"
+
+[[actions.config.conditions.all]]
+field = "stage"
+operator = "equals"
+value = "Proposal"
+
+[[actions.config.conditions.all]]
+field = "lastActivityAt"
+operator = "less_than"
+value = "{{now - 3 days}}"
+
+[[actions.config.conditions.all]]
+field = "status"
+operator = "equals"
+value = "open"
+
+# For each stale deal, create a follow-up task
+[[actions]]
+id = "create_tasks"
+type = "create_task"
+depends_on = "find_stale_deals"
+
+[actions.config]
+title = "Follow up on {{deal.name}}"
+description = "No activity logged in 3+ days. Please reach out to {{deal.primaryContact.name}}."
+priority = "high"
+due_date = "{{now + 1 day}}"
+assignee = "{{deal.ownerId}}"
+deal_id = "{{deal.id}}"
+contact_id = "{{deal.primaryContactId}}"
+
+# Send notification to deal owner
+[[actions]]
+id = "notify_owner"
+type = "send_notification"
+depends_on = "create_tasks"
+
+[actions.config]
+channel = "slack"
+user = "{{deal.ownerId}}"
+message = """
+:warning: *Follow-up Required*
+
+Deal *{{deal.name}}* ({{deal.amount.value | currency}}) has had no activity for 3+ days.
+
+A follow-up task has been created. Please reach out to {{deal.primaryContact.name}} today.
+"""
+
+[error_handling]
+on_error = "continue"
+notify_on_error = true

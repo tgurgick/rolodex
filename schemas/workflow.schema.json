@@ -1,0 +1,172 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rolodex.dev/schemas/workflow.json",
+  "title": "Workflow",
+  "description": "An automated workflow definition",
+  "type": "object",
+  "required": ["id", "name", "trigger", "actions"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the workflow"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Workflow name"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this workflow does"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the workflow is active"
+    },
+    "trigger": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["event", "schedule", "manual", "webhook"],
+          "description": "How the workflow is triggered"
+        },
+        "event": {
+          "type": "object",
+          "properties": {
+            "entity": { "type": "string", "enum": ["contact", "company", "deal", "activity", "task"] },
+            "action": { "type": "string", "enum": ["created", "updated", "deleted", "stage_changed"] },
+            "conditions": { "$ref": "#/definitions/conditions" }
+          },
+          "description": "Event-based trigger configuration"
+        },
+        "schedule": {
+          "type": "object",
+          "properties": {
+            "cron": { "type": "string", "description": "Cron expression" },
+            "timezone": { "type": "string", "default": "UTC" }
+          },
+          "description": "Schedule-based trigger configuration"
+        },
+        "webhook": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "method": { "type": "string", "enum": ["POST", "GET"] },
+            "secret": { "type": "string" }
+          },
+          "description": "Webhook trigger configuration"
+        }
+      },
+      "description": "What starts this workflow"
+    },
+    "actions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/action" },
+      "minItems": 1,
+      "description": "Actions to perform"
+    },
+    "errorHandling": {
+      "type": "object",
+      "properties": {
+        "onError": { "type": "string", "enum": ["stop", "continue", "retry"] },
+        "maxRetries": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "retryDelay": { "type": "integer", "description": "Delay in seconds between retries" },
+        "notifyOnError": { "type": "boolean" }
+      },
+      "description": "How to handle errors"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdBy": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "updatedBy": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "definitions": {
+    "conditions": {
+      "type": "object",
+      "properties": {
+        "all": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/condition" }
+        },
+        "any": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/condition" }
+        }
+      },
+      "description": "Conditions that must be met"
+    },
+    "condition": {
+      "type": "object",
+      "required": ["field", "operator", "value"],
+      "properties": {
+        "field": { "type": "string", "description": "Field to evaluate (supports dot notation)" },
+        "operator": {
+          "type": "string",
+          "enum": ["equals", "not_equals", "contains", "not_contains", "greater_than", "less_than", "is_empty", "is_not_empty", "in", "not_in"]
+        },
+        "value": { "description": "Value to compare against" }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID for this action step" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "update_record",
+            "create_record",
+            "delete_record",
+            "send_email",
+            "send_notification",
+            "create_task",
+            "assign_owner",
+            "add_tag",
+            "remove_tag",
+            "http_request",
+            "delay",
+            "condition",
+            "ai_analyze"
+          ]
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Action-specific configuration"
+        },
+        "onSuccess": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/action" },
+          "description": "Actions to run on success"
+        },
+        "onFailure": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/action" },
+          "description": "Actions to run on failure"
+        }
+      }
+    }
+  }
+}

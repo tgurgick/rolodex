@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rolodex.dev/schemas/contact.json",
+  "title": "Contact",
+  "description": "A contact represents an individual person in the CRM",
+  "type": "object",
+  "required": ["id", "firstName", "lastName", "email"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the contact"
+    },
+    "firstName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Contact's first name"
+    },
+    "lastName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Contact's last name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Primary email address"
+    },
+    "emails": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["email", "type"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "type": { "type": "string", "enum": ["work", "personal", "other"] },
+          "primary": { "type": "boolean", "default": false }
+        }
+      },
+      "description": "All email addresses for this contact"
+    },
+    "phone": {
+      "type": "string",
+      "pattern": "^[+]?[0-9\\s\\-().]+$",
+      "description": "Primary phone number"
+    },
+    "phones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["number", "type"],
+        "properties": {
+          "number": { "type": "string" },
+          "type": { "type": "string", "enum": ["work", "mobile", "home", "other"] },
+          "primary": { "type": "boolean", "default": false }
+        }
+      },
+      "description": "All phone numbers for this contact"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Job title"
+    },
+    "department": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Department within company"
+    },
+    "companyId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Reference to associated company"
+    },
+    "address": {
+      "$ref": "#/definitions/address",
+      "description": "Primary address"
+    },
+    "socialProfiles": {
+      "type": "object",
+      "properties": {
+        "linkedin": { "type": "string", "format": "uri" },
+        "twitter": { "type": "string" },
+        "github": { "type": "string" }
+      },
+      "description": "Social media profiles"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "customFields": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom fields defined by the user"
+    },
+    "source": {
+      "type": "string",
+      "description": "How this contact was acquired (e.g., 'website', 'referral', 'import')"
+    },
+    "ownerId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User ID of the contact owner"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "inactive", "archived"],
+      "default": "active",
+      "description": "Contact status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form notes about the contact"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the contact was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the contact was last updated"
+    },
+    "createdBy": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User or AI agent that created this contact"
+    },
+    "updatedBy": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User or AI agent that last updated this contact"
+    }
+  },
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "street1": { "type": "string" },
+        "street2": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "country": { "type": "string" }
+      }
+    }
+  }
+}

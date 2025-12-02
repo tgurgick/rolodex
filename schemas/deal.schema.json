@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rolodex.dev/schemas/deal.json",
+  "title": "Deal",
+  "description": "A deal or opportunity in the sales pipeline",
+  "type": "object",
+  "required": ["id", "name", "stage"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the deal"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Deal name/title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Deal description"
+    },
+    "stage": {
+      "type": "string",
+      "description": "Current pipeline stage"
+    },
+    "amount": {
+      "type": "object",
+      "required": ["value", "currency"],
+      "properties": {
+        "value": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "default": "USD" }
+      },
+      "description": "Deal value"
+    },
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Win probability percentage"
+    },
+    "expectedCloseDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected closing date"
+    },
+    "actualCloseDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual closing date (when closed)"
+    },
+    "companyId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated company"
+    },
+    "contactIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" },
+      "description": "Associated contacts"
+    },
+    "primaryContactId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Primary contact for this deal"
+    },
+    "ownerId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Sales rep owning this deal"
+    },
+    "source": {
+      "type": "string",
+      "description": "Lead source"
+    },
+    "lostReason": {
+      "type": "string",
+      "description": "Reason for losing the deal (if applicable)"
+    },
+    "competitors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Known competitors in this deal"
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "productId": { "type": "string" },
+          "name": { "type": "string" },
+          "quantity": { "type": "number" },
+          "unitPrice": { "type": "number" },
+          "discount": { "type": "number" }
+        }
+      },
+      "description": "Products/services in this deal"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "customFields": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "stageHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stage": { "type": "string" },
+          "enteredAt": { "type": "string", "format": "date-time" },
+          "exitedAt": { "type": "string", "format": "date-time" },
+          "changedBy": { "type": "string", "format": "uuid" }
+        }
+      },
+      "description": "History of stage changes"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "won", "lost"],
+      "default": "open"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdBy": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "updatedBy": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

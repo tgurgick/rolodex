@@ -1,0 +1,187 @@
+# Rolodex Configuration
+# Copy this file to rolodex.toml and customize for your environment
+
+# =============================================================================
+# Application Settings
+# =============================================================================
+[app]
+name = "My CRM"
+environment = "development"  # development, staging, production
+log_level = "info"           # debug, info, warn, error
+timezone = "UTC"
+
+# =============================================================================
+# Database Configuration
+# =============================================================================
+[database]
+# Supported adapters: postgresql, mysql, sqlite, dynamodb, firestore, cosmosdb
+adapter = "postgresql"
+
+# Connection string (use environment variable in production)
+url = "${DATABASE_URL}"
+
+# Connection pool settings
+pool_min = 2
+pool_max = 10
+
+# =============================================================================
+# Storage Configuration (for file attachments)
+# =============================================================================
+[storage]
+# Supported adapters: s3, gcs, azure-blob, local
+adapter = "local"
+
+# For S3
+# bucket = "rolodex-files"
+# region = "us-east-1"
+
+# For local storage
+path = "./data/files"
+
+# =============================================================================
+# Cache Configuration
+# =============================================================================
+[cache]
+# Supported adapters: redis, memcached, memory
+adapter = "memory"
+
+# For Redis
+# url = "${REDIS_URL}"
+# ttl = 3600
+
+# =============================================================================
+# Queue Configuration (for background jobs)
+# =============================================================================
+[queue]
+# Supported adapters: bullmq, sqs, pubsub, servicebus
+adapter = "bullmq"
+
+# For BullMQ (Redis-based)
+redis_url = "${REDIS_URL}"
+
+# =============================================================================
+# Authentication
+# =============================================================================
+[auth]
+# Supported methods: api_key, jwt, oauth2, saml
+methods = ["api_key", "jwt"]
+
+# JWT settings
+jwt_secret = "${JWT_SECRET}"
+jwt_expiry = "24h"
+
+# Session settings
+session_timeout = "7d"
+
+# =============================================================================
+# AI Integration
+# =============================================================================
+[ai]
+enabled = true
+
+# AI provider for embeddings and analysis
+# Supported: anthropic, openai, local
+provider = "anthropic"
+api_key = "${AI_API_KEY}"
+
+# MCP server settings
+mcp_enabled = true
+mcp_port = 3001
+
+# Safety settings - operations requiring human approval
+human_approval_required = [
+  "delete_contact",
+  "delete_company",
+  "bulk_update",
+  "bulk_delete",
+  "export_data",
+  "workflow_create",
+]
+
+# Rate limiting for AI operations (requests per minute)
+ai_rate_limit = 60
+
+# =============================================================================
+# Modules (enable/disable features)
+# =============================================================================
+[modules]
+contacts = true
+companies = true
+deals = true
+pipeline = true
+activities = true
+tasks = true
+workflows = true
+analytics = true
+integrations = true
+
+# =============================================================================
+# Pipeline Configuration
+# =============================================================================
+[pipeline]
+# Default deal stages
+stages = [
+  { name = "Lead", probability = 10, color = "#6B7280" },
+  { name = "Qualified", probability = 25, color = "#3B82F6" },
+  { name = "Proposal", probability = 50, color = "#8B5CF6" },
+  { name = "Negotiation", probability = 75, color = "#F59E0B" },
+  { name = "Closed Won", probability = 100, color = "#10B981" },
+  { name = "Closed Lost", probability = 0, color = "#EF4444" },
+]
+
+# =============================================================================
+# Activity Types
+# =============================================================================
+[activities]
+types = [
+  { name = "call", icon = "phone", color = "#3B82F6" },
+  { name = "email", icon = "mail", color = "#10B981" },
+  { name = "meeting", icon = "calendar", color = "#8B5CF6" },
+  { name = "note", icon = "sticky-note", color = "#F59E0B" },
+  { name = "task", icon = "check-square", color = "#6B7280" },
+]
+
+# =============================================================================
+# Integrations
+# =============================================================================
+[integrations.email]
+enabled = false
+# provider = "gmail"  # gmail, outlook, smtp
+# credentials = "${EMAIL_CREDENTIALS}"
+
+[integrations.calendar]
+enabled = false
+# provider = "google"  # google, outlook, caldav
+
+[integrations.slack]
+enabled = false
+# webhook_url = "${SLACK_WEBHOOK_URL}"
+
+# =============================================================================
+# Security
+# =============================================================================
+[security]
+# CORS settings
+cors_origins = ["http://localhost:3000"]
+
+# Rate limiting (requests per minute per IP)
+rate_limit = 100
+
+# Encryption
+encrypt_at_rest = true
+
+# Audit logging
+audit_enabled = true
+audit_retention_days = 90
+
+# =============================================================================
+# Server Settings
+# =============================================================================
+[server]
+host = "0.0.0.0"
+port = 3000
+api_prefix = "/api/v1"
+
+# TLS (for production)
+# tls_cert = "/path/to/cert.pem"
+# tls_key = "/path/to/key.pem"

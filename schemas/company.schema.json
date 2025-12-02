@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rolodex.dev/schemas/company.json",
+  "title": "Company",
+  "description": "A company or organization in the CRM",
+  "type": "object",
+  "required": ["id", "name"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the company"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Company name"
+    },
+    "domain": {
+      "type": "string",
+      "format": "hostname",
+      "description": "Primary website domain"
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "Company website URL"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry sector"
+    },
+    "size": {
+      "type": "string",
+      "enum": ["1-10", "11-50", "51-200", "201-500", "501-1000", "1001-5000", "5000+"],
+      "description": "Employee count range"
+    },
+    "revenue": {
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "default": "USD" }
+      },
+      "description": "Annual revenue"
+    },
+    "description": {
+      "type": "string",
+      "description": "Company description"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Main phone number"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "General contact email"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street1": { "type": "string" },
+        "street2": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "country": { "type": "string" }
+      },
+      "description": "Headquarters address"
+    },
+    "socialProfiles": {
+      "type": "object",
+      "properties": {
+        "linkedin": { "type": "string", "format": "uri" },
+        "twitter": { "type": "string" },
+        "facebook": { "type": "string", "format": "uri" }
+      },
+      "description": "Social media profiles"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "customFields": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom fields defined by the user"
+    },
+    "parentCompanyId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Parent company for subsidiaries"
+    },
+    "ownerId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User ID of the company owner"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["prospect", "customer", "partner", "vendor", "competitor", "archived"],
+      "default": "prospect",
+      "description": "Company relationship status"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdBy": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "updatedBy": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

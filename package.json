@@ -1,0 +1,46 @@
+{
+  "name": "rolodex",
+  "version": "0.1.0",
+  "description": "An AI-first, open-source CRM for the modern era",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "deploy:aws": "cd deploy/aws && ./deploy.sh",
+    "deploy:gcp": "cd deploy/gcp && ./deploy.sh",
+    "deploy:azure": "cd deploy/azure && ./deploy.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "prettier": "^3.1.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "npm@10.0.0",
+  "keywords": [
+    "crm",
+    "ai",
+    "sales",
+    "contacts",
+    "pipeline",
+    "open-source",
+    "cloud-agnostic"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/rolodex.git"
+  }
+}

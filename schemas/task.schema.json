@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rolodex.dev/schemas/task.json",
+  "title": "Task",
+  "description": "A task or to-do item in the CRM",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the task"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Task title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed task description"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "urgent"],
+      "default": "medium",
+      "description": "Task priority"
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the task is due"
+    },
+    "reminderAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When to send a reminder"
+    },
+    "contactId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated contact"
+    },
+    "companyId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated company"
+    },
+    "dealId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated deal"
+    },
+    "assigneeId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User assigned to this task"
+    },
+    "category": {
+      "type": "string",
+      "description": "Task category (e.g., 'follow-up', 'proposal', 'admin')"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "customFields": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "recurrence": {
+      "type": "object",
+      "properties": {
+        "frequency": { "type": "string", "enum": ["daily", "weekly", "monthly", "yearly"] },
+        "interval": { "type": "integer", "minimum": 1 },
+        "endDate": { "type": "string", "format": "date" },
+        "daysOfWeek": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 6 } }
+      },
+      "description": "Recurrence pattern for repeating tasks"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the task was completed"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "completed", "cancelled"],
+      "default": "pending"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdBy": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "updatedBy": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}
